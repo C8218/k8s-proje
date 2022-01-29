@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    environment {
+        PATH="$PATH:/usr/local/bin"
+        APP_STACK_NAME="k8s-prj"
+        CFN_KEYPAIR="ec2_key"
+        CFN_TEMPLATE="Students_files/kubernetes-env-cf.yaml"
+        AWS_REGION="us-east-1"
+    }
+    stages {
+        stage('Create k8s Cluster') {
+            steps {
+                echo "Creating k8s Cluster for the app"
+                sh """
+                aws cloudformation create-stack --region ${AWS_REGION} \
+                --stack-name ${APP_STACK_NAME} --capabilities CAPABILITY_IAM \
+                --template-body file://${CFN_TEMPLATE} --parameters ParameterKey=KeyPairName,ParameterValue=${CFN_KEYPAIR}
+                """
+            }
+        }
+        stage('Package Application') {
+            steps {
+                echo 'Packaging the app into jars with maven'
+                sh "cd k8s/secret_configmap && kubectl apply -f ."
+            }
+        }
+}
