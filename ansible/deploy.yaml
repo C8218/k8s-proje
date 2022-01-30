@@ -4,7 +4,7 @@
   tasks:
     - name: copy kubernetes directories to the kubernetes master node
       copy:
-        src: /home/ec2-user/k8s-proje/k8s/
+        src: ${WORKSPACE}/k8s/
         dest: /home/ubuntu
     - name: apply kubernetes files
       become_user: ubuntu
