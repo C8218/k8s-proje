@@ -26,7 +26,7 @@ pipeline {
                 docker build -t c8218eyup1313/python_web_server:latest ."
                 sh "docker push c8218eyup1313/python_result_server"
                 sh "docker push c8218eyup1313/python_web_server"
-
             }
+        }
         }
 }
