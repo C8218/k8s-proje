@@ -1,0 +1,21 @@
+---
+- hosts: role_master
+  become: true
+  tasks:
+    - name: Ansible copy directory to the remote server
+      copy:
+        src: /home/ec2-user/k8s-proje/k8s/
+        dest: /home/ubuntu
+    - name: apply secret and configmaps
+      become_user: ubuntu
+      shell: |
+        kubectl apply -f /home/ubuntu/secret_configmap/
+        kubectl apply -f /home/ubuntu/mysql/
+        kubectl apply -f /home/ubuntu/result_server/
+        kubectl apply -f /home/ubuntu/web_server/
+      #sudo make
+      #sudo make
+      #sudo make
+      #sudo make install
+        
+        
