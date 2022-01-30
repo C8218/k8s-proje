@@ -8,20 +8,25 @@ pipeline {
         AWS_REGION="us-east-1"
     }
     stages {
-        stage('Create k8s Cluster') {
+        // stage('Create k8s Cluster') {
+        //     steps {
+        //         echo "Creating k8s Cluster for the app"
+        //         sh """
+        //         aws cloudformation create-stack --region ${AWS_REGION} \
+        //         --stack-name ${APP_STACK_NAME} --capabilities CAPABILITY_IAM \
+        //         --template-body file://${CFN_TEMPLATE} --parameters ParameterKey=KeyPairName,ParameterValue=${CFN_KEYPAIR}
+        //         """
+        //     }
+        // }
+        stage('Building images and pushing to dockerhub') {
             steps {
-                echo "Creating k8s Cluster for the app"
-                sh """
-                aws cloudformation create-stack --region ${AWS_REGION} \
-                --stack-name ${APP_STACK_NAME} --capabilities CAPABILITY_IAM \
-                --template-body file://${CFN_TEMPLATE} --parameters ParameterKey=KeyPairName,ParameterValue=${CFN_KEYPAIR}
-                """
-            }
-        }
-        stage('Package Application') {
-            steps {
-                echo 'Packaging the app into jars with maven'
-                sh "cd k8s/secret_configmap && kubectl apply -f ."
+                sh "cd /home/ec2-user/k8s-proje/AppFiles/image_for_result_server && \
+                docker build -t c8218eyup1313/python_result_server:latest ."
+                sh "cd /home/ec2-user/k8s-proje/AppFiles/image_for_web_server && \
+                docker build -t c8218eyup1313/python_web_server:latest ."
+                sh "docker push c8218eyup1313/python_result_server"
+                sh "docker push c8218eyup1313/python_web_server"
+
             }
         }
 }
