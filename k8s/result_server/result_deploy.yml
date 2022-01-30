@@ -18,7 +18,7 @@ spec:
       containers:
         - name: result-app
           resources:
-          image: c8218eyup1313/python_result_server
+          image: c8218eyup1313/python_result_server:latest
           ports:
             - containerPort: 80
           env:
